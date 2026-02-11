@@ -1,12 +1,14 @@
-name: Deploy Pages From Release
+﻿name: Deploy Pages
 
 on:
+  push:
+    branches: [main]
   release:
     types: [published]
   workflow_dispatch:
     inputs:
-      release_tag:
-        description: "Tag to deploy (optional on manual runs)"
+      ref:
+        description: "Ref to deploy (optional on manual runs)"
         required: false
         type: string
 
@@ -25,15 +27,15 @@ jobs:
         id: ref
         shell: bash
         run: |
-          if [ -n "${{ github.event.release.tag_name }}" ]; then
+          if [ -n "${{ inputs.ref }}" ]; then
+            echo "value=${{ inputs.ref }}" >> "$GITHUB_OUTPUT"
+          elif [ -n "${{ github.event.release.tag_name }}" ]; then
             echo "value=${{ github.event.release.tag_name }}" >> "$GITHUB_OUTPUT"
-          elif [ -n "${{ inputs.release_tag }}" ]; then
-            echo "value=${{ inputs.release_tag }}" >> "$GITHUB_OUTPUT"
           else
-            echo "value=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+            echo "value=${{ github.sha }}" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Checkout release ref
+      - name: Checkout ref
         uses: actions/checkout@v4
         with:
           ref: ${{ steps.ref.outputs.value }}
@@ -44,10 +46,11 @@ jobs:
           set -euo pipefail
           rm -rf _site
           mkdir -p _site
-          cp index.html _site/
-          cp script.js _site/
-          cp style.css _site/
-          cp -R "notificação" "_site/notificação"
+          find . -mindepth 1 -maxdepth 1 \
+            ! -name '.git' \
+            ! -name '.github' \
+            ! -name '_site' \
+            -exec cp -R {} _site/ \;
           touch _site/.nojekyll
 
       - name: Publish to gh-pages
