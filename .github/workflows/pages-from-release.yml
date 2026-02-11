@@ -4,29 +4,42 @@ on:
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Tag to deploy (optional on manual runs)"
+        required: false
+        type: string
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
-  group: pages
+  group: pages-release
   cancel-in-progress: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Resolve ref
+        id: ref
+        shell: bash
+        run: |
+          if [ -n "${{ github.event.release.tag_name }}" ]; then
+            echo "value=${{ github.event.release.tag_name }}" >> "$GITHUB_OUTPUT"
+          elif [ -n "${{ inputs.release_tag }}" ]; then
+            echo "value=${{ inputs.release_tag }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Checkout release ref
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.release.tag_name || github.ref_name }}
+          ref: ${{ steps.ref.outputs.value }}
 
       - name: Prepare site artifact
+        shell: bash
         run: |
           set -euo pipefail
           rm -rf _site
@@ -37,14 +50,9 @@ jobs:
           cp -R "notificação" "_site/notificação"
           touch _site/.nojekyll
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Publish to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          path: _site
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: _site
+          force_orphan: true
