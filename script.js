@@ -489,7 +489,7 @@ async function neGeneratePDF(){
 
   const cnpjDigits=onlyDigits(cnpjRaw);
   const cnpj=cnpjDigits.length===14 ? formatCNPJCustom(cnpjDigits) : cnpjRaw;
-  const razaoText=razao || '';
+  const razaoText=(razao || '').toLocaleUpperCase('pt-BR');
   const cnpjText=cnpj ? `CNPJ: ${cnpj}` : '';
   const dateIso=getDateISOInGMT3();
   const partsDate=dateIso.split('-').map(Number);
