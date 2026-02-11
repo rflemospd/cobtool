@@ -359,7 +359,7 @@ async function neGeneratePDF(){
   }
 
   const baseUrl=esfera==='PRATI'
-    ? 'notifica%C3%A7%C3%A3o/Notifica%C3%A7%E2%95%9Eo%20EXTRAJUDICIAL%20-%20PRATI.pdf'
+    ? 'notifica%C3%A7%C3%A3o/PRATI.pdf'
     : 'notifica%C3%A7%C3%A3o/NDS.pdf';
 
   let pdfBytes;
@@ -553,7 +553,7 @@ async function neGeneratePDF(){
     let tableItems=[];
   let tableViewport=null;
   let tablePage=page1;
-  if(esfera==='NDS' && page2){
+  if(page2){
     tablePage=page2;
     try{
       const textItems2=await getTextItems(2);
