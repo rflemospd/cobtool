@@ -674,8 +674,9 @@ async function neGeneratePDF(){
       }
     });
   }
-  const safeName=(razao||'cliente').toUpperCase().replace(/[^A-Z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40);
-  const fileName='notificacao-extrajudicial_' + safeName + '_' + dateIso + '.pdf';
+  const cnpjOnlyDigits=onlyDigits(cnpjRaw);
+  const cnpjFilePart=cnpjOnlyDigits || 'SEM_CNPJ';
+  const fileName=`Notificação Extrajudicial - ${cnpjFilePart} - ${esfera}.pdf`;
 
   const outBytes=await pdfDoc.save();
   const blob=new Blob([outBytes], {type:'application/pdf'});
