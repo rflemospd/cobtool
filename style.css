@@ -1561,25 +1561,80 @@ input:disabled, textarea:disabled, select:disabled{
   margin:0 6px;
 }
 
-/* Ajuste local do slider NDS/PRATI para evitar sobreposição de texto */
+/* Página Notificação Extrajudicial */
+#page-notificacao-extrajudicial .card{
+  width:100%;
+}
+
+#page-notificacao-extrajudicial .panel-section{
+  max-width:none;
+  margin:0;
+}
+
+/* Slider NDS/PRATI centralizado abaixo do título */
 .ne-toggle{
-  gap:12px;
+  gap:8px;
   flex-wrap:nowrap;
   justify-content:center;
+  margin:6px auto 16px;
 }
 .ne-toggle .form-switch.compact-switch{
-  margin:0 10px;
+  margin:0 4px;
   flex:0 0 auto;
+}
+.ne-toggle .form-switch.compact-switch .form-check-input{
+  width:3.6em !important;
+  height:1.7em !important;
 }
 .ne-toggle .rep-toggle-label{
   white-space:nowrap;
   flex:0 0 auto;
+  font-size:12px;
+  font-weight:600;
+  letter-spacing:.01em;
+  color:var(--fg);
 }
 
-/* Cabeçalho próprio para evitar regra absoluta do panel-head-with-switch */
-.ne-head{
-  position:static;
-  justify-content:space-between;
+@media (max-width: 768px){
+  .ne-toggle{
+    gap:6px;
+    margin:8px auto 14px;
+  }
+  .ne-toggle .form-switch.compact-switch{
+    margin:0 3px;
+  }
+  .ne-toggle .form-switch.compact-switch .form-check-input{
+    width:3.2em !important;
+    height:1.5em !important;
+  }
+  .ne-toggle .rep-toggle-label{
+    font-size:12px;
+  }
+}
+
+/* Campos da Notificação com mais área útil em telas grandes */
+#page-notificacao-extrajudicial #ne-razao,
+#page-notificacao-extrajudicial #ne-cnpj,
+#page-notificacao-extrajudicial #ne-titulos{
+  width:100%;
+  font-size:15px;
+  padding:12px 14px;
+}
+
+#page-notificacao-extrajudicial #ne-titulos{
+  min-height:320px;
+}
+
+@media (max-width: 768px){
+  #page-notificacao-extrajudicial #ne-razao,
+  #page-notificacao-extrajudicial #ne-cnpj,
+  #page-notificacao-extrajudicial #ne-titulos{
+    font-size:14px;
+    padding:10px 12px;
+  }
+  #page-notificacao-extrajudicial #ne-titulos{
+    min-height:240px;
+  }
 }
 
 .rep-toggle input[type="range"]::-webkit-slider-thumb{

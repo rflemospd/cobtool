@@ -206,7 +206,7 @@ const PAGE_PARENT={
   'neg-canceladas':'negociacoes',
   'registro-representantes':'menu-cadastro',
   transferencias:'menu-esfera',
-  'notificacao-extrajudicial':'menu-esfera',
+  'notificacao-extrajudicial':'home',
   'emissao-boletos':'menu-esfera',
   'registro-contato':'menu-esfera',
   formatacao:'menu-formatacao',
@@ -363,14 +363,14 @@ async function neGeneratePDF(){
     .map(line=>line.trim())
     .filter(Boolean)
     .length;
-  const baseVariant=
-    (titulosLineCount>=25 && titulosLineCount<=31) ? '_31tl' :
-    (titulosLineCount>=19 && titulosLineCount<=24) ? '_30tl' :
-    (titulosLineCount>=13 && titulosLineCount<=18) ? '_29tl' :
-    (titulosLineCount>=1 && titulosLineCount<=4) ? '_fewtl' : '';
+  let baseLineCount=4;
+  if(titulosLineCount>=5){
+    baseLineCount=Math.min(titulosLineCount, 31);
+  }
+  const baseSuffix=`_${String(baseLineCount).padStart(2,'0')}tl.pdf`;
   const baseFileName=esfera==='PRATI'
-    ? (baseVariant ? `PRATI${baseVariant}.pdf` : 'PRATI.pdf')
-    : (baseVariant ? `NDS${baseVariant}.pdf` : 'NDS.pdf');
+    ? `PRATI${baseSuffix}`
+    : `NDS${baseSuffix}`;
   const baseUrl='notifica%C3%A7%C3%A3o/' + encodeURIComponent(baseFileName);
 
   let pdfBytes;
@@ -4199,7 +4199,7 @@ function negSyncDateDisplay(){
   disp.value=formatBRDateFromISO(inp.value);
 }
 // Formata bloco de negociação exatamente como o modelo solicitado, preservando espaçamentos.
-function negBuildCompensacaoBlock(datas, valorParcela, startIndex=1){
+function negBuildCompensacaoBlock(datas, valorParcela, startIndex=1, entradaInfo=null){
   const top="~~~~~~~~~~~~~~~~ NEGOCIAÇÃO ~~~~~~~~~~~~~~~~";
   const header="Nº PARCELA    DATA VENCTO.     VLR. BASE       DATA PAGTO.  ";
   const line="——————————————————————";
@@ -4209,13 +4209,22 @@ function negBuildCompensacaoBlock(datas, valorParcela, startIndex=1){
   const gap1='                   '; // 19 espaços entre Nº PARCELA e DATA VENCTO.
   const gap2='           ';       // 11 espaços entre DATA VENCTO. e VLR. BASE
   const gap3='                   '; // 19 espaços entre VLR. BASE e DATA PAGTO.
-  const rows=datas.map((dt,i)=>{
-    const num=pad(i+startIndex,2);
-    const vencto=dt;
-    const valStr=formatBR(valorParcela).padEnd(5,' ');
-    return `${num}${gap1}${vencto}${gap2}${valStr}${gap3}X  `;
+  const rows=[];
+  let totalValor=0;
+  function pushRow(parcelaNum, vencto, valor){
+    totalValor+=(valor||0);
+    const num=pad(parcelaNum,2);
+    const valStr=formatBR(valor||0).padEnd(5,' ');
+    rows.push(`${num}${gap1}${vencto}${gap2}${valStr}${gap3}X  `);
+  }
+  if(entradaInfo && (entradaInfo.valor||0)>0){
+    const entradaData=entradaInfo.data || negFormatDateBR(new Date());
+    pushRow(1, entradaData, entradaInfo.valor||0);
+  }
+  datas.forEach((dt,i)=>{
+    pushRow(i+startIndex, dt, valorParcela);
   });
-  const total=formatBR(valorParcela*datas.length);
+  const total=formatBR(totalValor);
   return [
     top,
     header,
@@ -4289,10 +4298,17 @@ function negGenerateDatas(){
     const valorTotalBruto=(valorDevido||0)+baseEncargos-(valorEntrada||0);
     valorParcela=Math.ceil(valorTotalBruto/nParc);
   }
-  const startIndex=(entradaAtiva && valorEntrada>0) ? 2 : 1;
+  let entradaInfo=null;
+  let startIndex=1;
+  if(entradaAtiva && valorEntrada>0){
+    const existente=negEditingId ? negFindById(negEditingId) : null;
+    const dataEntrada=existente?.dataEntrada || negFormatDateBR(new Date());
+    entradaInfo={valor:valorEntrada, data:dataEntrada};
+    startIndex=2;
+  }
   const out=document.getElementById('neg-compensacao-out');
   if(out){
-    out.value=negBuildCompensacaoBlock(datas, valorParcela, startIndex);
+    out.value=negBuildCompensacaoBlock(datas, valorParcela, startIndex, entradaInfo);
   }
 }
 function negClearForm(){

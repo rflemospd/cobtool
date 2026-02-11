@@ -53,6 +53,10 @@
             <i class="bi bi-gear" aria-hidden="true"></i>
             <span>ESFERA - OPERAÇÃO</span>
           </button>
+          <button class="card home-card" data-page="notificacao-extrajudicial">
+            <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
+            <span>NOTIFICAÇÃO EXTRAJUDICIAL</span>
+          </button>
           <button class="card home-card" data-page="neg-cadastro">
             <i class="bi bi-person-lines-fill" aria-hidden="true"></i>
             <span>CADASTRO DE CLIENTES</span>
@@ -110,10 +114,6 @@
           <button class="card home-card" data-page="transferencias">
             <i class="bi bi-arrow-down-up" aria-hidden="true"></i>
             <span>TRANSFERÊNCIAS</span>
-          </button>
-          <button class="card home-card" data-page="notificacao-extrajudicial">
-            <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
-            <span>NOTIFICAÇÃO EXTRAJUDICIAL</span>
           </button>
         </div>
       </section>
@@ -1527,34 +1527,32 @@
       <!-- Página: Notificação Extrajudicial -->
       <section id="page-notificacao-extrajudicial" class="page">
         <div class="row g-2 g-md-3 compact-layout align-items-start stretch-row justify-content-center">
-          <div class="col-12 col-lg-8">
+          <div class="col-12">
             <section class="card p-2 p-sm-3 h-100">
               <div class="panel-section">
                 <h2 class="panel-title">
                   <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
                   <span>NOTIFICAÇÃO EXTRAJUDICIAL</span>
                 </h2>
+                <div class="rep-toggle m-0 ne-toggle">
+                  <span class="rep-toggle-label">NDS</span>
+                  <div class="form-check form-switch compact-switch mb-0">
+                    <input id="ne-esfera" class="form-check-input" type="checkbox" aria-label="Selecionar NDS ou PRATI">
+                    <label class="form-check-label visually-hidden" for="ne-esfera">NDS / PRATI</label>
+                  </div>
+                  <span class="rep-toggle-label">PRATI</span>
+                </div>
                 <div class="row g-2">
                   <div class="col-12">
                     <label for="ne-razao">RAZÃO SOCIAL</label>
                     <input id="ne-razao" type="text" placeholder="RAZÃO SOCIAL" />
                   </div>
-                  <div class="col-12 col-md-6">
+                  <div class="col-12">
                     <label for="ne-cnpj">CNPJ</label>
                     <input id="ne-cnpj" class="guard-cnpj" type="text" inputmode="numeric" maxlength="14" placeholder="00000000000000" />
                   </div>
                   <div class="col-12">
-                    <div class="d-flex justify-content-between align-items-center gap-2 mb-1 ne-head">
-                      <label class="mb-0" for="ne-titulos">TÍTULOS</label>
-                      <div class="rep-toggle m-0 ne-toggle">
-                        <span class="rep-toggle-label">NDS</span>
-                        <div class="form-check form-switch compact-switch mb-0">
-                          <input id="ne-esfera" class="form-check-input" type="checkbox" aria-label="Selecionar NDS ou PRATI">
-                          <label class="form-check-label visually-hidden" for="ne-esfera">NDS / PRATI</label>
-                        </div>
-                        <span class="rep-toggle-label">PRATI</span>
-                      </div>
-                    </div>
+                    <label for="ne-titulos">TÍTULOS</label>
                     <textarea id="ne-titulos" rows="6" placeholder="EX.: 000155148-1    001    21/11/2025    05/12/2025    864,00"></textarea>
                   </div>
                 </div>
