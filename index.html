@@ -61,6 +61,10 @@
             <i class="bi bi-person-lines-fill" aria-hidden="true"></i>
             <span>CADASTRO DE CLIENTES</span>
           </button>
+          <button class="card home-card" data-page="alfa">
+            <i class="bi bi-chat-left-dots" aria-hidden="true"></i>
+            <span>ALFA</span>
+          </button>
         </div>
       </section>
 
@@ -1568,6 +1572,74 @@
         </div>
       </section>
 
+
+      <!-- Pagina: ALFA -->
+      <section id="page-alfa" class="page">
+        <div class="row g-2 g-md-3 compact-layout align-items-start stretch-row">
+          <div class="col-12">
+            <section class="card p-2 p-sm-3 h-100">
+              <div class="panel-section">
+                <h2 class="panel-title">
+                  <i class="bi bi-chat-left-dots" aria-hidden="true"></i>
+                  <span>ALFA</span>
+                </h2>
+                <div class="row g-2">
+                  <div class="col-12 col-lg-6">
+                    <label for="alfa-operador">OPERADOR EM USO</label>
+                    <select id="alfa-operador" class="form-select form-select-sm" aria-label="Operador em uso">
+                      <option value="Carlyle|(45) 99958-0258">Carlyle - (45) 99958-0258</option>
+                      <option value="Lucia|(45) 99113-7325">Lucia - (45) 99113-7325</option>
+                      <option value="Pedro|(45) 99905-3383">Pedro - (45) 99905-3383</option>
+                      <option value="Rafael|(45) 99903-1265">Rafael - (45) 99903-1265</option>
+                      <option value="Renan|(45) 99903-1652">Renan - (45) 99903-1652</option>
+                      <option value="Vanderleia|(45) 99114-2947">Vanderleia - (45) 99114-2947</option>
+                    </select>
+                  </div>
+                  <div class="col-12 col-lg-6">
+                    <label for="alfa-cnpj">CNPJ DO CLIENTE</label>
+                    <input id="alfa-cnpj" class="guard-cnpj" type="text" inputmode="numeric" maxlength="14" placeholder="00000000000000" />
+                  </div>
+                  <div class="col-12">
+                    <label for="alfa-esfera">TEXTO DO ESFERA</label>
+                    <textarea id="alfa-esfera" rows="10" placeholder="COLE O TEXTO DO ESFERA PARA GERAR A MENSAGEM"></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="actions">
+                <button class="btn primary btn-sm" id="alfa-msg-fria" type="button">
+                  <i class="bi bi-chat-left-text" aria-hidden="true"></i>
+                  <span>MENSAGEM FRIA</span>
+                </button>
+                <button class="btn btn-sm" id="alfa-msg-previsao-serasa" type="button">
+                  <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                  <span>PREVISÃO + AVISO SERASA</span>
+                </button>
+                <button class="btn btn-sm" id="alfa-msg-risco-bloqueio" type="button">
+                  <i class="bi bi-shield-exclamation" aria-hidden="true"></i>
+                  <span>RISCO DE BLOQUEIO DE CRÉDITO</span>
+                </button>
+                <button class="btn btn-sm" id="alfa-msg-regularizacao-urgente" type="button">
+                  <i class="bi bi-alarm" aria-hidden="true"></i>
+                  <span>REGULARIZAÇÃO URGENTE</span>
+                </button>
+                <button class="btn btn-sm" id="alfa-limpar" type="button">
+                  <i class="bi bi-eraser" aria-hidden="true"></i>
+                  <span>LIMPAR</span>
+                </button>
+              </div>
+            </section>
+            <section class="card output-wrap" id="alfa-wrap" aria-live="polite">
+              <textarea id="alfa-out" class="output" readonly></textarea>
+              <div class="out-actions">
+                <button class="btn btn-sm" id="alfa-copiar" type="button">
+                  <i class="bi bi-clipboard" aria-hidden="true"></i>
+                  <span>COPIAR</span>
+                </button>
+              </div>
+            </section>
+          </div>
+        </div>
+      </section>
 
       <!-- Página: Import/Export -->
       <section id="page-import-export" class="page">

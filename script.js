@@ -190,7 +190,7 @@ function maskPhoneInput(e){
 })();
 
 /* ===== NAVEGAÇÃO ENTRE PÁGINAS ===== */
-const pages=['home','menu-formatacao','menu-esfera','menu-cadastro','formatacao','compensacoes','import-export','formatacao-texto','formatacao-cobrancas','negociacoes','neg-cadastro','neg-cad-negociacoes','neg-andamento','neg-finalizadas','neg-canceladas','registro-representantes','transferencias','notificacao-extrajudicial','emissao-boletos','registro-contato'];
+const pages=['home','menu-formatacao','menu-esfera','menu-cadastro','formatacao','compensacoes','import-export','formatacao-texto','formatacao-cobrancas','negociacoes','neg-cadastro','neg-cad-negociacoes','neg-andamento','neg-finalizadas','neg-canceladas','registro-representantes','transferencias','notificacao-extrajudicial','alfa','emissao-boletos','registro-contato'];
 const PAGE_PARENT={
   home:null,
   'menu-formatacao':'home',
@@ -207,6 +207,7 @@ const PAGE_PARENT={
   'registro-representantes':'menu-cadastro',
   transferencias:'menu-esfera',
   'notificacao-extrajudicial':'home',
+  alfa:'home',
   'emissao-boletos':'menu-esfera',
   'registro-contato':'menu-esfera',
   formatacao:'menu-formatacao',
@@ -281,6 +282,7 @@ function setPage(pg){
       'neg-andamento':'#page-neg-andamento .panel-section, #page-neg-andamento .card',
       transferencias:'#page-transferencias .panel-section, #page-transferencias .card',
       'notificacao-extrajudicial':'#page-notificacao-extrajudicial .panel-section, #page-notificacao-extrajudicial .card',
+      alfa:'#page-alfa .panel-section, #page-alfa .card',
       'emissao-boletos':'#page-emissao-boletos .panel-section, #page-emissao-boletos .card',
       'registro-contato':'#page-registro-contato .panel-section, #page-registro-contato .card'
     };
@@ -2825,6 +2827,271 @@ document.getElementById('toggleTheme').addEventListener('click',()=>{
     });
   });
   ftSync();
+})();
+
+/* =======================================================================================
+   ALFA
+   ======================================================================================= */
+(function initAlfa(){
+  const operadorSel=document.getElementById('alfa-operador');
+  const cnpjIn=document.getElementById('alfa-cnpj');
+  const esferaIn=document.getElementById('alfa-esfera');
+  const outWrap=document.getElementById('alfa-wrap');
+  const outArea=document.getElementById('alfa-out');
+  const btnFria=document.getElementById('alfa-msg-fria');
+  const btnPrevisaoSerasa=document.getElementById('alfa-msg-previsao-serasa');
+  const btnRiscoBloqueio=document.getElementById('alfa-msg-risco-bloqueio');
+  const btnRegularizacaoUrgente=document.getElementById('alfa-msg-regularizacao-urgente');
+  const btnLimpar=document.getElementById('alfa-limpar');
+  const btnCopiar=document.getElementById('alfa-copiar');
+  if(!operadorSel || !cnpjIn || !esferaIn || !outWrap || !outArea || !btnFria || !btnPrevisaoSerasa || !btnRiscoBloqueio || !btnRegularizacaoUrgente) return;
+
+  let alfaLastKind='previsao-serasa';
+
+  function alfaShowOutput(text){
+    if(text && text.trim()){
+      outArea.value=text;
+      outWrap.style.display='block';
+      outWrap.classList.add('reveal');
+      outArea.classList.remove('flash');
+      void outArea.offsetWidth;
+      outArea.classList.add('flash');
+      return;
+    }
+    outArea.value='';
+    outWrap.style.display='none';
+  }
+
+  function alfaPick(arr){
+    if(!Array.isArray(arr) || !arr.length) return '';
+    return arr[Math.floor(Math.random()*arr.length)] || '';
+  }
+
+  function alfaHumanList(items){
+    const xs=(items||[]).filter(Boolean);
+    if(!xs.length) return '';
+    if(xs.length===1) return xs[0];
+    if(xs.length===2) return `${xs[0]} e ${xs[1]}`;
+    return `${xs.slice(0,-1).join(', ')} e ${xs[xs.length-1]}`;
+  }
+
+  function alfaOneLine(text){
+    return String(text||'')
+      .replace(/\s*\r?\n+\s*/g,' ')
+      .replace(/\s{2,}/g,' ')
+      .trim();
+  }
+
+  function alfaNormalizeNota(raw){
+    return String(raw||'').trim().split('-')[0].replace(/\D+/g,'');
+  }
+
+  function alfaShortNota(nota){
+    const d=String(nota||'').replace(/\D+/g,'');
+    if(!d) return '';
+    return d.replace(/^0+(?=\d)/,'');
+  }
+
+  function alfaExtractEsferaData(raw){
+    const text=String(raw||'');
+    const rowRe=/^\s*([0-9.\-]+)\s+(\d{1,3})\s+(\d{2}\/\d{2}\/\d{4})\s+(\d{2}\/\d{2}\/\d{4})\s+([\d.,]+)\s*$/;
+    const titulos=[];
+    const notaSet=new Set();
+    text.split(/\r?\n/).forEach(line=>{
+      const normalized=String(line||'').trim().replace(/\s{2,}/g,' ');
+      if(!normalized) return;
+      const m=normalized.match(rowRe);
+      if(!m) return;
+      const nota=alfaNormalizeNota(m[1]);
+      const item=String(parseInt(m[2],10)||0).padStart(3,'0');
+      const emissao=m[3];
+      const vencto=m[4];
+      const valor=parseBR(m[5]);
+      titulos.push({nota,item,emissao,vencto,valor});
+      if(nota && !notaSet.has(nota)) notaSet.add(nota);
+    });
+    const total=titulos.reduce((acc,t)=>acc+(t.valor||0),0);
+    return {
+      titulos,
+      notas:[...notaSet],
+      total
+    };
+  }
+
+  function alfaNormalizeOperator(value){
+    const raw=String(value||'');
+    const [nome,telefone]=raw.split('|');
+    return {
+      nome:(nome||'').trim(),
+      telefone:(telefone||'').trim()
+    };
+  }
+
+  function alfaGetSystemHour(){
+    return new Date().getHours();
+  }
+
+  function alfaBlockSaudacao(){
+    const manha=[
+      '*Bom dia*, tudo bem?',
+      '*Bom dia*, tudo bem com você?',
+      '*Bom dia*, tudo bom?'
+    ];
+    const tarde=[
+      '*Boa tarde*, tudo bem?',
+      '*Boa tarde*, tudo bem com você?',
+      '*Boa tarde*, tudo bom?'
+    ];
+    return alfaGetSystemHour()<12 ? alfaPick(manha) : alfaPick(tarde);
+  }
+
+  function alfaBlockIdentificacao(nome){
+    const n=nome||'operador';
+    return alfaPick([
+      `Meu nome é ${n}, falo do *setor financeiro* da *Prati-Donaduzzi*.`,
+      `Meu nome é ${n}, faço parte do *setor financeiro* da *Prati-Donaduzzi*.`,
+      `Sou ${n}, do *setor financeiro* da *Prati-Donaduzzi*.`
+    ]);
+  }
+
+  function alfaBuildContext(){
+    const esferaRaw=String(esferaIn.value||'').trim();
+    if(!esferaRaw){
+      alert('Preencha o texto do esfera para gerar a mensagem.');
+      return null;
+    }
+    const esfera=alfaExtractEsferaData(esferaRaw);
+    const operador=alfaNormalizeOperator(operadorSel.value);
+    const cnpjDigits=onlyDigits(cnpjIn.value||'').slice(0,14);
+    const cnpjFmt=cnpjDigits.length===14 ? formatCNPJCustom(cnpjDigits) : '';
+    const notasFull=esfera.notas.filter(Boolean);
+    const notasShort=notasFull.map(alfaShortNota).filter(Boolean);
+    const notasShortFmt=notasShort.length
+      ? alfaHumanList(notasShort.map(n=>`\`${n}\``))
+      : '`000000`';
+    const qtd=esfera.titulos.length;
+    return {
+      operador,
+      cnpjFmt,
+      qtd,
+      qtdFmt:`\`${qtd}\``,
+      qtdTxt:qtd===1 ? '1 boleto em atraso' : `${qtd} boletos em atraso`,
+      valorFmt:`\`R$ ${formatBR(esfera.total)}\``,
+      notasShortFmt
+    };
+  }
+
+  function alfaComposeFria(ctx){
+    const cnpjTag=ctx.cnpjFmt ? `\`${ctx.cnpjFmt}\`` : '`00.000.000/0000-00`';
+    const pergunta=alfaPick([
+      `Falo com o(a) responsável pelo CNPJ ${cnpjTag}?`,
+      `Consigo falar com o(a) responsável pelo CNPJ ${cnpjTag}?`,
+      `Você pode me direcionar ao(à) responsável pelo CNPJ ${cnpjTag}?`,
+      `Poderia me confirmar quem é o(a) responsável pelo CNPJ ${cnpjTag}?`,
+      `Posso tratar desse assunto com o(a) responsável pelo CNPJ ${cnpjTag}?`,
+      `Quem responde pelo CNPJ ${cnpjTag}, por gentileza?`,
+      `Poderia me encaminhar para o(a) responsável pelo CNPJ ${cnpjTag}?`,
+      `Falo com quem responde pelo CNPJ ${cnpjTag}?`,
+      `Você consegue me colocar em contato com o(a) responsável pelo CNPJ ${cnpjTag}?`,
+      `Preciso falar com o(a) responsável pelo CNPJ ${cnpjTag}, pode me ajudar?`
+    ]);
+    return `${alfaBlockSaudacao()} ${alfaBlockIdentificacao(ctx.operador.nome)} ${pergunta}`;
+  }
+
+  function alfaComposePrevisaoSerasa(ctx){
+    const variacoes=[
+      `Constam ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, somando ${ctx.valorFmt} + encargos, preciso de um retorno com previsão de regularização para evitar registro junto ao *Serasa*. Conseguimos concluir essa regularização *ainda nesta semana*?`,
+      `Existem ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, no total de ${ctx.valorFmt} + encargos, preciso de previsão de regularização para evitar registro junto ao *Serasa*. Posso contar com essa regularização *ainda nesta semana*?`,
+      `Temos ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, totalizando ${ctx.valorFmt} + encargos, preciso da previsão de pagamento para evitar registro junto ao *Serasa*. Podemos concluir essa regularização *ainda nesta semana*?`,
+      `Foram identificados ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, no valor de ${ctx.valorFmt} + encargos, preciso de retorno com previsão para evitar registro junto ao *Serasa*. Você confirma regularização *ainda nesta semana*?`,
+      `Há ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, no montante de ${ctx.valorFmt} + encargos, preciso de previsão de regularização para evitar registro junto ao *Serasa*. Podemos fechar essa pendência *ainda nesta semana*?`,
+      `Verificamos ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, somando ${ctx.valorFmt} + encargos, preciso de retorno com previsão para evitar registro junto ao *Serasa*. Consigo considerar regularização *ainda nesta semana*?`,
+      `No cadastro constam ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, total de ${ctx.valorFmt} + encargos, preciso da sua previsão de regularização para evitar registro junto ao *Serasa*. Posso contar com isso *ainda nesta semana*?`,
+      `Estão pendentes ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, no valor de ${ctx.valorFmt} + encargos, preciso de previsão de pagamento para evitar registro junto ao *Serasa*. Conseguimos regularizar *ainda nesta semana*?`,
+      `Constam pendências de ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, totalizando ${ctx.valorFmt} + encargos, preciso de retorno com previsão para evitar registro junto ao *Serasa*. Podemos finalizar essa regularização *ainda nesta semana*?`,
+      `Temos em aberto ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, com total de ${ctx.valorFmt} + encargos, preciso da sua previsão de regularização para evitar registro junto ao *Serasa*. Posso contar com a quitação *ainda nesta semana*?`
+    ];
+    return `${alfaBlockSaudacao()} ${alfaPick(variacoes)}`;
+  }
+
+  function alfaComposeRiscoBloqueio(ctx){
+    const variacoes=[
+      `Há risco de *bloqueio integral de crédito* no cadastro por conta dos ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, no total de ${ctx.valorFmt} + encargos. Preciso da regularização *ainda nesta semana*. Posso contar com os pagamentos?`,
+      `Seu cadastro está sob risco de *bloqueio integral de crédito* devido aos ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, no total de ${ctx.valorFmt} + encargos. Preciso regularizar *ainda nesta semana*. Posso contar com os pagamentos?`,
+      `Existe risco de *bloqueio integral de crédito* no cadastro em razão dos ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, totalizando ${ctx.valorFmt} + encargos. Preciso dessa regularização *ainda nesta semana*. Posso contar com os pagamentos?`,
+      `O cadastro está em risco de *bloqueio integral de crédito* por conta dos ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, no valor de ${ctx.valorFmt} + encargos. Preciso da quitação *ainda nesta semana*. Posso contar com os pagamentos?`,
+      `Temos risco de *bloqueio integral de crédito* no cadastro devido aos ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, no total de ${ctx.valorFmt} + encargos. Preciso regularizar *ainda nesta semana*. Posso contar com os pagamentos?`,
+      `Há iminência de *bloqueio integral de crédito* por conta dos ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, somando ${ctx.valorFmt} + encargos. Preciso da regularização *ainda nesta semana*. Posso contar com os pagamentos?`,
+      `Seu cadastro pode sofrer *bloqueio integral de crédito* em razão dos ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, total de ${ctx.valorFmt} + encargos. Preciso regularizar *ainda nesta semana*. Posso contar com os pagamentos?`,
+      `Identificamos risco de *bloqueio integral de crédito* no cadastro devido aos ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, no valor total de ${ctx.valorFmt} + encargos. Preciso dessa regularização *ainda nesta semana*. Posso contar com os pagamentos?`,
+      `Há risco imediato de *bloqueio integral de crédito* por conta dos ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, com total de ${ctx.valorFmt} + encargos. Preciso da regularização *ainda nesta semana*. Posso contar com os pagamentos?`,
+      `O cadastro encontra-se com risco de *bloqueio integral de crédito* pelos ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, totalizando ${ctx.valorFmt} + encargos. Preciso regularizar *ainda nesta semana*. Posso contar com os pagamentos?`
+    ];
+    return `${alfaBlockSaudacao()} ${alfaPick(variacoes)}`;
+  }
+
+  function alfaComposeRegularizacaoUrgente(ctx){
+    const variacoes=[
+      `Seu cadastro está com *registros no Serasa* e com *bloqueio integral de crédito* devido aos ${ctx.qtdTxt} referentes às notas fiscais ${ctx.notasShortFmt}, no valor total de ${ctx.valorFmt} + encargos. Solicito a *regularização imediata* dos boletos para evitar *direcionamento ao setor jurídico*.`,
+      `Seu cadastro possui *registros no Serasa* e *bloqueio integral de crédito* por conta dos ${ctx.qtdTxt} referentes às notas fiscais ${ctx.notasShortFmt}, no valor total de ${ctx.valorFmt} + encargos. Preciso da *regularização imediata* dos boletos para evitar *direcionamento ao setor jurídico*.`,
+      `Constam *registros no Serasa* e *bloqueio integral de crédito* no cadastro em razão dos ${ctx.qtdTxt} referentes às notas fiscais ${ctx.notasShortFmt}, totalizando ${ctx.valorFmt} + encargos. Peço *regularização imediata* dos boletos para evitar *direcionamento ao setor jurídico*.`,
+      `O cadastro está com *registros no Serasa* e com *bloqueio integral de crédito* por conta dos ${ctx.qtdTxt} referentes às notas fiscais ${ctx.notasShortFmt}, com total de ${ctx.valorFmt} + encargos. Solicito *regularização imediata* para evitar *direcionamento ao setor jurídico*.`,
+      `Há *registros no Serasa* e *bloqueio integral de crédito* no cadastro devido aos ${ctx.qtdTxt} referentes às notas fiscais ${ctx.notasShortFmt}, no valor de ${ctx.valorFmt} + encargos. Preciso de *regularização imediata* para evitar *direcionamento ao setor jurídico*.`,
+      `Seu cadastro permanece com *registros no Serasa* e com *bloqueio integral de crédito* em função dos ${ctx.qtdTxt} referentes às notas fiscais ${ctx.notasShortFmt}, totalizando ${ctx.valorFmt} + encargos. Solicito *regularização imediata* para evitar *direcionamento ao setor jurídico*.`,
+      `Identificamos *registros no Serasa* e *bloqueio integral de crédito* no cadastro por conta dos ${ctx.qtdTxt} referentes às notas fiscais ${ctx.notasShortFmt}, no total de ${ctx.valorFmt} + encargos. Peço *regularização imediata* para evitar *direcionamento ao setor jurídico*.`,
+      `No cadastro constam *registros no Serasa* e *bloqueio integral de crédito* devido aos ${ctx.qtdTxt} referentes às notas fiscais ${ctx.notasShortFmt}, no valor total de ${ctx.valorFmt} + encargos. Solicito a *regularização imediata* dos boletos para evitar *direcionamento ao setor jurídico*.`,
+      `Seu cadastro já está com *registros no Serasa* e com *bloqueio integral de crédito* por conta dos ${ctx.qtdTxt} referentes às notas fiscais ${ctx.notasShortFmt}, total de ${ctx.valorFmt} + encargos. Preciso de *regularização imediata* para evitar *direcionamento ao setor jurídico*.`,
+      `Existem *registros no Serasa* e *bloqueio integral de crédito* no cadastro em razão dos ${ctx.qtdTxt} referentes às notas fiscais ${ctx.notasShortFmt}, totalizando ${ctx.valorFmt} + encargos. Solicito *regularização imediata* para evitar *direcionamento ao setor jurídico*.`
+    ];
+    return `${alfaBlockSaudacao()} ${alfaPick(variacoes)}`;
+  }
+
+  function alfaGenerate(kind){
+    const ctx=alfaBuildContext();
+    if(!ctx) return;
+    if(kind!=='fria' && (!ctx.qtd || ctx.qtd<1)){
+      alert('Não consegui identificar os títulos no texto do esfera. Verifique se o conteúdo está no padrão esperado.');
+      return;
+    }
+    let msg='';
+    if(kind==='fria') msg=alfaComposeFria(ctx);
+    if(kind==='previsao-serasa') msg=alfaComposePrevisaoSerasa(ctx);
+    if(kind==='risco-bloqueio') msg=alfaComposeRiscoBloqueio(ctx);
+    if(kind==='regularizacao-urgente') msg=alfaComposeRegularizacaoUrgente(ctx);
+    if(!msg.trim()) return;
+    alfaLastKind=kind;
+    alfaShowOutput(alfaOneLine(msg));
+  }
+
+  function alfaCopy(){
+    const text=outArea.value||'';
+    if(!text.trim()) return;
+    (navigator.clipboard?.writeText(text)||Promise.resolve()).then(()=>{
+      btnCopiar?.classList.add('copied');
+      setTimeout(()=>btnCopiar?.classList.remove('copied'),1100);
+    });
+  }
+
+  function alfaClear(){
+    cnpjIn.value='';
+    esferaIn.value='';
+    operadorSel.selectedIndex=0;
+    alfaShowOutput('');
+    alfaLastKind='previsao-serasa';
+  }
+
+  btnFria.addEventListener('click',()=>alfaGenerate('fria'));
+  btnPrevisaoSerasa.addEventListener('click',()=>alfaGenerate('previsao-serasa'));
+  btnRiscoBloqueio.addEventListener('click',()=>alfaGenerate('risco-bloqueio'));
+  btnRegularizacaoUrgente.addEventListener('click',()=>alfaGenerate('regularizacao-urgente'));
+  btnCopiar?.addEventListener('click',alfaCopy);
+  btnLimpar?.addEventListener('click',alfaClear);
+  esferaIn.addEventListener('keydown',e=>{
+    if((e.ctrlKey || e.metaKey) && e.key==='Enter'){
+      e.preventDefault();
+      alfaGenerate(alfaLastKind);
+    }
+  });
 })();
 
 /* =======================================================================================

@@ -464,7 +464,7 @@ label{
 }
 
 /* ===== INPUTS & TEXTAREAS - MAIS ACONCHEGANTES ===== */
-input[type="text"], input[type="number"], textarea{
+input[type="text"], input[type="number"], textarea, select, .form-select{
   width:100%;
   padding:10px 12px;
   border:2px solid var(--field-b);
@@ -484,7 +484,9 @@ textarea{
 
 input[type="text"]:focus,
 input[type="number"]:focus,
-textarea:focus{
+textarea:focus,
+select:focus,
+.form-select:focus{
   border-color:var(--primary);
   box-shadow:0 0 0 3px rgba(108, 92, 231, 0.15);
   outline:none;
