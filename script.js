@@ -2987,8 +2987,8 @@ document.getElementById('toggleTheme').addEventListener('click',()=>{
     const notasFull=esfera.notas.filter(Boolean);
     const notasShort=notasFull.map(alfaShortNota).filter(Boolean);
     const notasShortFmt=notasShort.length
-      ? alfaHumanList(notasShort.map(n=>`\`${n}\``))
-      : '`000000`';
+      ? alfaHumanList(notasShort)
+      : '000000';
     const qtd=esfera.titulos.length;
     return {
       operador,
