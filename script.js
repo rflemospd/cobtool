@@ -2966,9 +2966,11 @@ document.getElementById('toggleTheme').addEventListener('click',()=>{
   function alfaBlockIdentificacao(nome){
     const n=nome||'operador';
     return alfaPick([
-      `Meu nome é ${n}, falo do *setor financeiro* da *Prati-Donaduzzi*.`,
-      `Meu nome é ${n}, faço parte do *setor financeiro* da *Prati-Donaduzzi*.`,
-      `Sou ${n}, do *setor financeiro* da *Prati-Donaduzzi*.`
+      `Meu nome é *${n}*, faço parte do *setor financeiro* da *Prati-Donaduzzi*.`,
+      `Meu nome é *${n}*, falo do *setor financeiro* da *Prati-Donaduzzi*.`,
+      `Me chamo *${n}*, falo em nome do *setor financeiro* da *Prati-Donaduzzi*.`,
+      `Me chamo *${n}*, faço do *setor financeiro* da *Prati-Donaduzzi*.`,
+      `Sou *${n}*, do *setor financeiro* da *Prati-Donaduzzi*.`
     ]);
   }
 
@@ -2992,9 +2994,9 @@ document.getElementById('toggleTheme').addEventListener('click',()=>{
       operador,
       cnpjFmt,
       qtd,
-      qtdFmt:`\`${qtd}\``,
-      qtdTxt:qtd===1 ? '1 boleto em atraso' : `${qtd} boletos em atraso`,
-      valorFmt:`\`R$ ${formatBR(esfera.total)}\``,
+      qtdFmt:String(qtd),
+      qtdTxt:String(qtd),
+      valorFmt:`R$ ${formatBR(esfera.total)}`,
       notasShortFmt
     };
   }
@@ -3004,64 +3006,149 @@ document.getElementById('toggleTheme').addEventListener('click',()=>{
     const pergunta=alfaPick([
       `Falo com o(a) responsável pelo CNPJ ${cnpjTag}?`,
       `Consigo falar com o(a) responsável pelo CNPJ ${cnpjTag}?`,
-      `Você pode me direcionar ao(à) responsável pelo CNPJ ${cnpjTag}?`,
-      `Poderia me confirmar quem é o(a) responsável pelo CNPJ ${cnpjTag}?`,
-      `Posso tratar desse assunto com o(a) responsável pelo CNPJ ${cnpjTag}?`,
-      `Quem responde pelo CNPJ ${cnpjTag}, por gentileza?`,
-      `Poderia me encaminhar para o(a) responsável pelo CNPJ ${cnpjTag}?`,
-      `Falo com quem responde pelo CNPJ ${cnpjTag}?`,
-      `Você consegue me colocar em contato com o(a) responsável pelo CNPJ ${cnpjTag}?`,
-      `Preciso falar com o(a) responsável pelo CNPJ ${cnpjTag}, pode me ajudar?`
+      `O(A) responsável pelo CNPJ ${cnpjTag} se encontra?`,
+      `Poderia me confirmar se falo com o(a) responsável pelo CNPJ ${cnpjTag}?`,
+      `Gostaria de falar com o(a) responsável pelo CNPJ ${cnpjTag}?`,
+      `O responsável pelo CNPJ ${cnpjTag} se encontra?`,
+      `Poderia, por getileza, confirmar se falo com o(a) responsável pelo CNPJ ${cnpjTag}?`,
+      `Falo com a pessoa responsável pelo CNPJ ${cnpjTag}?`,
+      `Você poderia confirmar se falo com o(a) responsável pelo CNPJ ${cnpjTag}?`,
+      `Preciso falar com o(a) responsável pelo CNPJ ${cnpjTag}, seria possível?`
     ]);
     return `${alfaBlockSaudacao()} ${alfaBlockIdentificacao(ctx.operador.nome)} ${pergunta}`;
   }
 
+  function alfaComposePendencia(ctx){
+    if(ctx.qtd===1){
+      return alfaPick([
+        `Consta \`${ctx.qtdFmt}\` boleto *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, no valor de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Identificamos \`${ctx.qtdFmt}\` boleto *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, valor de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Há \`${ctx.qtdFmt}\` boleto *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, com valor de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Existe \`${ctx.qtdFmt}\` boleto *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, no montante de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Consta em aberto \`${ctx.qtdFmt}\` boleto *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, no valor de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `No cadastro consta \`${ctx.qtdFmt}\` boleto *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, com o valor de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Identificamos em seu cadastro \`${ctx.qtdFmt}\` boleto *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, com valor de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Você tem em seu cadastro \`${ctx.qtdFmt}\` boleto *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, no valor de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Consta \`${ctx.qtdFmt}\` *boleto vencido* referente à nota fiscal \`${ctx.notasShortFmt}\`, com valor de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Seu cadastro tem \`${ctx.qtdFmt}\` boleto *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, no valor de \`${ctx.valorFmt}\` *+ encargos*.`
+      ]);
+    }
+    return alfaPick([
+      `Constam \`${ctx.qtdFmt}\` boletos *em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Identificamos \`${ctx.qtdFmt}\` boletos *em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Há \`${ctx.qtdFmt}\` boletos *em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, com valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Existem \`${ctx.qtdFmt}\` boletos *em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, no montante total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Constam em aberto \`${ctx.qtdFmt}\` boletos *em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `No cadastro constam \`${ctx.qtdFmt}\` boletos *em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, com o valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Identificamos em seu cadastro \`${ctx.qtdFmt}\` boletos *em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, com valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Você tem em seu cadastro \`${ctx.qtdFmt}\` boletos *em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Constam \`${ctx.qtdFmt}\` boletos *vencidos* referentes às notas fiscais \`${ctx.notasShortFmt}\`, com valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Seu cadastro tem \`${ctx.qtdFmt}\` boletos *em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`
+    ]);
+  }
+
+  function alfaComposeRiscoSerasa(){
+    return alfaPick([
+      'Preciso da *previsão de pagamento* para evitar registro junto ao *Serasa*.',
+      'Preciso do seu *retorno com data prevista* para quitação para evitar registro junto ao *Serasa*.',
+      'Solicito a *previsão de regularização* para evitar registro junto ao *Serasa*.',
+      'Preciso de *previsão de pagamento* para evitar registro junto ao *Serasa*.',
+      'Preciso de *retorno com previsão de regularização* para evitar registro junto ao *Serasa*.',
+      'Preciso da sua *previsão de pagamento* para evitar registro junto ao *Serasa*.',
+      'Preciso de uma *posição com previsão de regularização* para evitar registro junto ao *Serasa*.',
+      'Preciso de *retorno com data prevista de pagamento* para evitar registro junto ao *Serasa*.',
+      'Preciso de *previsão de quitação* para evitar registro junto ao *Serasa*.',
+      'Preciso do *retorno com previsão de pagamento* para evitar registro junto ao *Serasa*.'
+    ]);
+  }
+
+  function alfaComposeCompromisso(){
+    return alfaPick([
+      'Posso contar com a regularização *ainda nesta semana*?',
+      'Posso contar com o pagamento *ainda nesta semana*?',
+      'Você efetuará o pagamento *ainda nesta semana*?',
+      'Você pode concluir a quitação *ainda nesta semana*?',
+      'Posso contar com a quitação *ainda nesta semana*?',
+      'Posso contar com seu comprometimento em regularizar o cadastro *ainda nesta semana*?',
+      'Posso contar com o pagamento até o *final da semana*?',
+      'Você consegue pagar *ainda nesta semana*?',
+      'Você pode regularizar a inadimplência *ainda nesta semana*?',
+      'Posso contar com o pagamento *ainda nesta semana*?'
+    ]);
+  }
+
   function alfaComposePrevisaoSerasa(ctx){
-    const variacoes=[
-      `Constam ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, somando ${ctx.valorFmt} + encargos, preciso de um retorno com previsão de regularização para evitar registro junto ao *Serasa*. Conseguimos concluir essa regularização *ainda nesta semana*?`,
-      `Existem ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, no total de ${ctx.valorFmt} + encargos, preciso de previsão de regularização para evitar registro junto ao *Serasa*. Posso contar com essa regularização *ainda nesta semana*?`,
-      `Temos ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, totalizando ${ctx.valorFmt} + encargos, preciso da previsão de pagamento para evitar registro junto ao *Serasa*. Podemos concluir essa regularização *ainda nesta semana*?`,
-      `Foram identificados ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, no valor de ${ctx.valorFmt} + encargos, preciso de retorno com previsão para evitar registro junto ao *Serasa*. Você confirma regularização *ainda nesta semana*?`,
-      `Há ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, no montante de ${ctx.valorFmt} + encargos, preciso de previsão de regularização para evitar registro junto ao *Serasa*. Podemos fechar essa pendência *ainda nesta semana*?`,
-      `Verificamos ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, somando ${ctx.valorFmt} + encargos, preciso de retorno com previsão para evitar registro junto ao *Serasa*. Consigo considerar regularização *ainda nesta semana*?`,
-      `No cadastro constam ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, total de ${ctx.valorFmt} + encargos, preciso da sua previsão de regularização para evitar registro junto ao *Serasa*. Posso contar com isso *ainda nesta semana*?`,
-      `Estão pendentes ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, no valor de ${ctx.valorFmt} + encargos, preciso de previsão de pagamento para evitar registro junto ao *Serasa*. Conseguimos regularizar *ainda nesta semana*?`,
-      `Constam pendências de ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, totalizando ${ctx.valorFmt} + encargos, preciso de retorno com previsão para evitar registro junto ao *Serasa*. Podemos finalizar essa regularização *ainda nesta semana*?`,
-      `Temos em aberto ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, com total de ${ctx.valorFmt} + encargos, preciso da sua previsão de regularização para evitar registro junto ao *Serasa*. Posso contar com a quitação *ainda nesta semana*?`
-    ];
-    return `${alfaBlockSaudacao()} ${alfaPick(variacoes)}`;
+    return `${alfaBlockSaudacao()} ${alfaComposePendencia(ctx)} ${alfaComposeRiscoSerasa()} ${alfaComposeCompromisso()}`;
+  }
+
+  function alfaComposeRiscoCredito(ctx){
+    if(ctx.qtd===1){
+      return alfaPick([
+        `Há risco de *bloqueio integral de crédito* no cadastro por conta do *boleto em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, no total de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Seu cadastro está sob risco de *bloqueio integral de crédito* devido ao *boleto em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, no total de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Existe risco de *bloqueio integral de crédito* no cadastro em razão d *boleto em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, totalizando \`${ctx.valorFmt}\` *+ encargos*.`,
+        `O cadastro está em risco de *bloqueio integral de crédito* por conta do *boleto em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, no valor de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Temos risco de *bloqueio integral de crédito* no cadastro devido ao *boleto em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, no total de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Há iminência de *bloqueio integral de crédito* por conta do *boleto em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, somando \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Seu cadastro pode sofrer *bloqueio integral de crédito* em razão do *boleto em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, total de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Identificamos risco de *bloqueio integral de crédito* no cadastro devido ao *boleto em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Há risco imediato de *bloqueio integral de crédito* por conta do *boleto em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, com total de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `O cadastro encontra-se com risco de *bloqueio integral de crédito* pelo *boleto em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, totalizando \`${ctx.valorFmt}\` *+ encargos*.`
+      ]);
+    }
+    return alfaPick([
+      `Há risco de *bloqueio integral de crédito* no cadastro por conta dos \`${ctx.qtdFmt}\` *boletos em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, no total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Seu cadastro está sob risco de *bloqueio integral de crédito* devido aos \`${ctx.qtdFmt}\` *boletos em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, no total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Existe risco de *bloqueio integral de crédito* no cadastro em razão dos \`${ctx.qtdFmt}\` *boletos em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, totalizando \`${ctx.valorFmt}\` *+ encargos*.`,
+      `O cadastro está em risco de *bloqueio integral de crédito* por conta dos \`${ctx.qtdFmt}\` *boletos em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, no valor de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Temos risco de *bloqueio integral de crédito* no cadastro devido aos \`${ctx.qtdFmt}\` *boletos em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, no total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Há iminência de *bloqueio integral de crédito* por conta dos \`${ctx.qtdFmt}\` *boletos em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, somando \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Seu cadastro pode sofrer *bloqueio integral de crédito* em razão dos \`${ctx.qtdFmt}\` *boletos em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Identificamos risco de *bloqueio integral de crédito* no cadastro devido aos \`${ctx.qtdFmt}\` *boletos em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Há risco imediato de *bloqueio integral de crédito* por conta dos \`${ctx.qtdFmt}\` *boletos em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, com total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `O cadastro encontra-se com risco de *bloqueio integral de crédito* pelos \`${ctx.qtdFmt}\` *boletos em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, totalizando \`${ctx.valorFmt}\` *+ encargos*.`
+    ]);
+  }
+
+  function alfaComposeUrgencia(){
+    return alfaPick([
+      'Preciso da regularização *ainda nesta semana*.',
+      'Preciso regularizar *ainda nesta semana*.',
+      'Preciso dessa regularização *ainda nesta semana*.',
+      'Preciso da quitação *ainda nesta semana*.'
+    ]);
   }
 
   function alfaComposeRiscoBloqueio(ctx){
-    const variacoes=[
-      `Há risco de *bloqueio integral de crédito* no cadastro por conta dos ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, no total de ${ctx.valorFmt} + encargos. Preciso da regularização *ainda nesta semana*. Posso contar com os pagamentos?`,
-      `Seu cadastro está sob risco de *bloqueio integral de crédito* devido aos ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, no total de ${ctx.valorFmt} + encargos. Preciso regularizar *ainda nesta semana*. Posso contar com os pagamentos?`,
-      `Existe risco de *bloqueio integral de crédito* no cadastro em razão dos ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, totalizando ${ctx.valorFmt} + encargos. Preciso dessa regularização *ainda nesta semana*. Posso contar com os pagamentos?`,
-      `O cadastro está em risco de *bloqueio integral de crédito* por conta dos ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, no valor de ${ctx.valorFmt} + encargos. Preciso da quitação *ainda nesta semana*. Posso contar com os pagamentos?`,
-      `Temos risco de *bloqueio integral de crédito* no cadastro devido aos ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, no total de ${ctx.valorFmt} + encargos. Preciso regularizar *ainda nesta semana*. Posso contar com os pagamentos?`,
-      `Há iminência de *bloqueio integral de crédito* por conta dos ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, somando ${ctx.valorFmt} + encargos. Preciso da regularização *ainda nesta semana*. Posso contar com os pagamentos?`,
-      `Seu cadastro pode sofrer *bloqueio integral de crédito* em razão dos ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, total de ${ctx.valorFmt} + encargos. Preciso regularizar *ainda nesta semana*. Posso contar com os pagamentos?`,
-      `Identificamos risco de *bloqueio integral de crédito* no cadastro devido aos ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, no valor total de ${ctx.valorFmt} + encargos. Preciso dessa regularização *ainda nesta semana*. Posso contar com os pagamentos?`,
-      `Há risco imediato de *bloqueio integral de crédito* por conta dos ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, com total de ${ctx.valorFmt} + encargos. Preciso da regularização *ainda nesta semana*. Posso contar com os pagamentos?`,
-      `O cadastro encontra-se com risco de *bloqueio integral de crédito* pelos ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, totalizando ${ctx.valorFmt} + encargos. Preciso regularizar *ainda nesta semana*. Posso contar com os pagamentos?`
-    ];
-    return `${alfaBlockSaudacao()} ${alfaPick(variacoes)}`;
+    return `${alfaBlockSaudacao()} ${alfaComposeRiscoCredito(ctx)} ${alfaComposeUrgencia()}`;
+  }
+
+  function alfaComposeRegistroBloqueio(ctx){
+    return alfaPick([
+      `Seu cadastro está com *registro(s) no Serasa* e com *bloqueio integral de crédito* devido ao(s) \`${ctx.qtdTxt}\` boleto(s) *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Seu cadastro possui *registro(s) no Serasa* e *bloqueio integral de crédito* por conta do(s) \`${ctx.qtdTxt}\` boleto(s) *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Consta(m) *registro(s) no Serasa* e *bloqueio integral de crédito* no cadastro em razão do(s) \`${ctx.qtdTxt}\` boleto(s) *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, totalizando \`${ctx.valorFmt}\` *+ encargos*.`,
+      `O cadastro está com *registro(s) no Serasa* e com *bloqueio integral de crédito* por conta do(s) \`${ctx.qtdTxt}\` boleto(s) *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, com total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Há *registro(s) no Serasa* e *bloqueio integral de crédito* no cadastro devido ao(s) \`${ctx.qtdTxt}\` boleto(s) *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, no valor de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Seu cadastro permanece com *registro(s) no Serasa* e com *bloqueio integral de crédito* em função do(s) \`${ctx.qtdTxt}\` boleto(s) *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, totalizando \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Identificamos *registro(s) no Serasa* e *bloqueio integral de crédito* no cadastro por conta do(s) \`${ctx.qtdTxt}\` boleto(s) *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, no total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `No cadastro consta(m) *registro(s) no Serasa* e *bloqueio integral de crédito* devido ao(s) \`${ctx.qtdTxt}\` boleto(s) *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Seu cadastro já está com *registro(s) no Serasa* e com *bloqueio integral de crédito* por conta do(s) \`${ctx.qtdTxt}\` boleto(s) *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Existe *registro(s) no Serasa* e *bloqueio integral de crédito* no cadastro em razão do(s) \`${ctx.qtdTxt}\` boleto(s) *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, totalizando \`${ctx.valorFmt}\` *+ encargos*.`
+    ]);
+  }
+
+  function alfaComposeDirecionamentoJuridico(){
+    return alfaPick([
+      'Para evitar direcionamento ao *setor jurídico*.',
+      'A fim de evitar direcionamento ao *setor jurídico*.',
+      'Para impedir direcionamento ao *setor jurídico*.',
+      'Para evitar o direcionamento ao *setor jurídico*.'
+    ]);
   }
 
   function alfaComposeRegularizacaoUrgente(ctx){
-    const variacoes=[
-      `Seu cadastro está com *registros no Serasa* e com *bloqueio integral de crédito* devido aos ${ctx.qtdTxt} referentes às notas fiscais ${ctx.notasShortFmt}, no valor total de ${ctx.valorFmt} + encargos. Solicito a *regularização imediata* dos boletos para evitar *direcionamento ao setor jurídico*.`,
-      `Seu cadastro possui *registros no Serasa* e *bloqueio integral de crédito* por conta dos ${ctx.qtdTxt} referentes às notas fiscais ${ctx.notasShortFmt}, no valor total de ${ctx.valorFmt} + encargos. Preciso da *regularização imediata* dos boletos para evitar *direcionamento ao setor jurídico*.`,
-      `Constam *registros no Serasa* e *bloqueio integral de crédito* no cadastro em razão dos ${ctx.qtdTxt} referentes às notas fiscais ${ctx.notasShortFmt}, totalizando ${ctx.valorFmt} + encargos. Peço *regularização imediata* dos boletos para evitar *direcionamento ao setor jurídico*.`,
-      `O cadastro está com *registros no Serasa* e com *bloqueio integral de crédito* por conta dos ${ctx.qtdTxt} referentes às notas fiscais ${ctx.notasShortFmt}, com total de ${ctx.valorFmt} + encargos. Solicito *regularização imediata* para evitar *direcionamento ao setor jurídico*.`,
-      `Há *registros no Serasa* e *bloqueio integral de crédito* no cadastro devido aos ${ctx.qtdTxt} referentes às notas fiscais ${ctx.notasShortFmt}, no valor de ${ctx.valorFmt} + encargos. Preciso de *regularização imediata* para evitar *direcionamento ao setor jurídico*.`,
-      `Seu cadastro permanece com *registros no Serasa* e com *bloqueio integral de crédito* em função dos ${ctx.qtdTxt} referentes às notas fiscais ${ctx.notasShortFmt}, totalizando ${ctx.valorFmt} + encargos. Solicito *regularização imediata* para evitar *direcionamento ao setor jurídico*.`,
-      `Identificamos *registros no Serasa* e *bloqueio integral de crédito* no cadastro por conta dos ${ctx.qtdTxt} referentes às notas fiscais ${ctx.notasShortFmt}, no total de ${ctx.valorFmt} + encargos. Peço *regularização imediata* para evitar *direcionamento ao setor jurídico*.`,
-      `No cadastro constam *registros no Serasa* e *bloqueio integral de crédito* devido aos ${ctx.qtdTxt} referentes às notas fiscais ${ctx.notasShortFmt}, no valor total de ${ctx.valorFmt} + encargos. Solicito a *regularização imediata* dos boletos para evitar *direcionamento ao setor jurídico*.`,
-      `Seu cadastro já está com *registros no Serasa* e com *bloqueio integral de crédito* por conta dos ${ctx.qtdTxt} referentes às notas fiscais ${ctx.notasShortFmt}, total de ${ctx.valorFmt} + encargos. Preciso de *regularização imediata* para evitar *direcionamento ao setor jurídico*.`,
-      `Existem *registros no Serasa* e *bloqueio integral de crédito* no cadastro em razão dos ${ctx.qtdTxt} referentes às notas fiscais ${ctx.notasShortFmt}, totalizando ${ctx.valorFmt} + encargos. Solicito *regularização imediata* para evitar *direcionamento ao setor jurídico*.`
-    ];
-    return `${alfaBlockSaudacao()} ${alfaPick(variacoes)}`;
+    return `${alfaBlockSaudacao()} ${alfaComposeRegistroBloqueio(ctx)} ${alfaComposeUrgencia()} ${alfaComposeDirecionamentoJuridico()}`;
   }
 
   function alfaGenerate(kind){
