@@ -1,8 +1,8 @@
-﻿name: Deploy Pages
+name: Deploy Pages
 
 on:
   push:
-    branches: [main]
+    branches: ["**"]
   release:
     types: [published]
   workflow_dispatch:
