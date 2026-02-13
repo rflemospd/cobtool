@@ -253,6 +253,10 @@ function setPage(pg){
       window.__cobtoolTransferenciasHideForm();
     }
   }
+  const pageIdForPg=pageIds[pg]||pg;
+  const hasPageEl=!!document.getElementById(`page-${pageIdForPg}`);
+  const registeredPage=pages.includes(pg);
+
   pages.forEach(p=>{
     document.querySelectorAll(`[data-page="${p}"]`).forEach(btn=>{
       btn.classList.toggle('primary', p===pg);
@@ -260,10 +264,24 @@ function setPage(pg){
     const pageId=pageIds[p]||p;
     document.getElementById(`page-${pageId}`)?.classList.toggle('active', p===pg);
   });
+
+  if(!registeredPage && hasPageEl){
+    document.querySelectorAll(`[data-page="${pg}"]`).forEach(btn=>btn.classList.add('primary'));
+    document.getElementById(`page-${pageIdForPg}`)?.classList.add('active');
+  }
+
+  if(!hasPageEl){
+    currentPage='home';
+    document.getElementById('page-home')?.classList.add('active');
+    document.querySelectorAll('[data-page]').forEach(btn=>{
+      btn.classList.toggle('primary', btn.getAttribute('data-page')==='home');
+    });
+  }
+
   localStorage.setItem('ch_last_page', pg);
   const navBack=document.getElementById('nav-back');
   if(navBack){
-    navBack.classList.toggle('d-none', pg==='home');
+    navBack.classList.toggle('d-none', currentPage==='home');
   }
   if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
     const popTargets={
@@ -286,7 +304,7 @@ function setPage(pg){
       'emissao-boletos':'#page-emissao-boletos .panel-section, #page-emissao-boletos .card',
       'registro-contato':'#page-registro-contato .panel-section, #page-registro-contato .card'
     };
-    const sel=popTargets[pg];
+    const sel=popTargets[currentPage] || (hasPageEl ? `#page-${pageIdForPg} .panel-section, #page-${pageIdForPg} .card` : '');
     if(sel){
       document.querySelectorAll(sel).forEach(el=>{
         el.classList.remove('pop-anim'); void el.offsetWidth; el.classList.add('pop-anim');
@@ -6713,7 +6731,7 @@ function trCloseModalIfOpenForId(id){
 document.addEventListener('DOMContentLoaded',()=>{
   const last=localStorage.getItem('ch_last_page');
   const pageId=last ? (pageIds[last]||last) : null;
-  const valid=last && pages.includes(last) && document.getElementById(`page-${pageId}`);
+  const valid=last && document.getElementById(`page-${pageId}`);
   if(valid){
     setPage(last);
     clearPageFields(last);
