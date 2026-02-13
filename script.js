@@ -2990,6 +2990,9 @@ document.getElementById('toggleTheme').addEventListener('click',()=>{
       ? alfaHumanList(notasShort)
       : '000000';
     const qtd=esfera.titulos.length;
+    const notasCount=notasShort.length;
+    const notaPrep=notasCount===1 ? 'à' : 'às';
+    const notaTerm=notasCount===1 ? 'nota fiscal' : 'notas fiscais';
     return {
       operador,
       cnpjFmt,
@@ -2997,7 +3000,9 @@ document.getElementById('toggleTheme').addEventListener('click',()=>{
       qtdFmt:String(qtd),
       qtdTxt:String(qtd),
       valorFmt:`R$ ${formatBR(esfera.total)}`,
-      notasShortFmt
+      notasShortFmt,
+      notaPrep,
+      notaTerm
     };
   }
 
@@ -3021,29 +3026,29 @@ document.getElementById('toggleTheme').addEventListener('click',()=>{
   function alfaComposePendencia(ctx){
     if(ctx.qtd===1){
       return alfaPick([
-        `Consta \`${ctx.qtdFmt}\` boleto *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, no valor de \`${ctx.valorFmt}\` *+ encargos*.`,
-        `Identificamos \`${ctx.qtdFmt}\` boleto *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, valor de \`${ctx.valorFmt}\` *+ encargos*.`,
-        `Há \`${ctx.qtdFmt}\` boleto *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, com valor de \`${ctx.valorFmt}\` *+ encargos*.`,
-        `Existe \`${ctx.qtdFmt}\` boleto *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, no montante de \`${ctx.valorFmt}\` *+ encargos*.`,
-        `Consta em aberto \`${ctx.qtdFmt}\` boleto *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, no valor de \`${ctx.valorFmt}\` *+ encargos*.`,
-        `No cadastro consta \`${ctx.qtdFmt}\` boleto *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, com o valor de \`${ctx.valorFmt}\` *+ encargos*.`,
-        `Identificamos em seu cadastro \`${ctx.qtdFmt}\` boleto *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, com valor de \`${ctx.valorFmt}\` *+ encargos*.`,
-        `Você tem em seu cadastro \`${ctx.qtdFmt}\` boleto *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, no valor de \`${ctx.valorFmt}\` *+ encargos*.`,
-        `Consta \`${ctx.qtdFmt}\` *boleto vencido* referente à nota fiscal \`${ctx.notasShortFmt}\`, com valor de \`${ctx.valorFmt}\` *+ encargos*.`,
-        `Seu cadastro tem \`${ctx.qtdFmt}\` boleto *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, no valor de \`${ctx.valorFmt}\` *+ encargos*.`
+        `Consta \`${ctx.qtdFmt}\` boleto *em atraso* referente ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, no valor de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Identificamos \`${ctx.qtdFmt}\` boleto *em atraso* referente ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, valor de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Há \`${ctx.qtdFmt}\` boleto *em atraso* referente ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, com valor de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Existe \`${ctx.qtdFmt}\` boleto *em atraso* referente ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, no montante de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Consta em aberto \`${ctx.qtdFmt}\` boleto *em atraso* referente ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, no valor de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `No cadastro consta \`${ctx.qtdFmt}\` boleto *em atraso* referente ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, com o valor de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Identificamos em seu cadastro \`${ctx.qtdFmt}\` boleto *em atraso* referente ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, com valor de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Você tem em seu cadastro \`${ctx.qtdFmt}\` boleto *em atraso* referente ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, no valor de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Consta \`${ctx.qtdFmt}\` *boleto vencido* referente ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, com valor de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Seu cadastro tem \`${ctx.qtdFmt}\` boleto *em atraso* referente ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, no valor de \`${ctx.valorFmt}\` *+ encargos*.`
       ]);
     }
     return alfaPick([
-      `Constam \`${ctx.qtdFmt}\` boletos *em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
-      `Identificamos \`${ctx.qtdFmt}\` boletos *em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
-      `Há \`${ctx.qtdFmt}\` boletos *em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, com valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
-      `Existem \`${ctx.qtdFmt}\` boletos *em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, no montante total de \`${ctx.valorFmt}\` *+ encargos*.`,
-      `Constam em aberto \`${ctx.qtdFmt}\` boletos *em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
-      `No cadastro constam \`${ctx.qtdFmt}\` boletos *em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, com o valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
-      `Identificamos em seu cadastro \`${ctx.qtdFmt}\` boletos *em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, com valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
-      `Você tem em seu cadastro \`${ctx.qtdFmt}\` boletos *em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
-      `Constam \`${ctx.qtdFmt}\` boletos *vencidos* referentes às notas fiscais \`${ctx.notasShortFmt}\`, com valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
-      `Seu cadastro tem \`${ctx.qtdFmt}\` boletos *em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`
+      `Constam \`${ctx.qtdFmt}\` boletos *em atraso* referentes ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Identificamos \`${ctx.qtdFmt}\` boletos *em atraso* referentes ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Há \`${ctx.qtdFmt}\` boletos *em atraso* referentes ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, com valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Existem \`${ctx.qtdFmt}\` boletos *em atraso* referentes ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, no montante total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Constam em aberto \`${ctx.qtdFmt}\` boletos *em atraso* referentes ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `No cadastro constam \`${ctx.qtdFmt}\` boletos *em atraso* referentes ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, com o valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Identificamos em seu cadastro \`${ctx.qtdFmt}\` boletos *em atraso* referentes ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, com valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Você tem em seu cadastro \`${ctx.qtdFmt}\` boletos *em atraso* referentes ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Constam \`${ctx.qtdFmt}\` boletos *vencidos* referentes ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, com valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Seu cadastro tem \`${ctx.qtdFmt}\` boletos *em atraso* referentes ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`
     ]);
   }
 
@@ -3084,29 +3089,29 @@ document.getElementById('toggleTheme').addEventListener('click',()=>{
   function alfaComposeRiscoCredito(ctx){
     if(ctx.qtd===1){
       return alfaPick([
-        `Há risco de *bloqueio integral de crédito* no cadastro por conta do *boleto em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, no total de \`${ctx.valorFmt}\` *+ encargos*.`,
-        `Seu cadastro está sob risco de *bloqueio integral de crédito* devido ao *boleto em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, no total de \`${ctx.valorFmt}\` *+ encargos*.`,
-        `Existe risco de *bloqueio integral de crédito* no cadastro em razão d *boleto em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, totalizando \`${ctx.valorFmt}\` *+ encargos*.`,
-        `O cadastro está em risco de *bloqueio integral de crédito* por conta do *boleto em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, no valor de \`${ctx.valorFmt}\` *+ encargos*.`,
-        `Temos risco de *bloqueio integral de crédito* no cadastro devido ao *boleto em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, no total de \`${ctx.valorFmt}\` *+ encargos*.`,
-        `Há iminência de *bloqueio integral de crédito* por conta do *boleto em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, somando \`${ctx.valorFmt}\` *+ encargos*.`,
-        `Seu cadastro pode sofrer *bloqueio integral de crédito* em razão do *boleto em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, total de \`${ctx.valorFmt}\` *+ encargos*.`,
-        `Identificamos risco de *bloqueio integral de crédito* no cadastro devido ao *boleto em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
-        `Há risco imediato de *bloqueio integral de crédito* por conta do *boleto em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, com total de \`${ctx.valorFmt}\` *+ encargos*.`,
-        `O cadastro encontra-se com risco de *bloqueio integral de crédito* pelo *boleto em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, totalizando \`${ctx.valorFmt}\` *+ encargos*.`
+        `Há risco de *bloqueio integral de crédito* no cadastro por conta do *boleto em atraso* referente ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, no total de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Seu cadastro está sob risco de *bloqueio integral de crédito* devido ao *boleto em atraso* referente ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, no total de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Existe risco de *bloqueio integral de crédito* no cadastro em razão d *boleto em atraso* referente ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, totalizando \`${ctx.valorFmt}\` *+ encargos*.`,
+        `O cadastro está em risco de *bloqueio integral de crédito* por conta do *boleto em atraso* referente ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, no valor de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Temos risco de *bloqueio integral de crédito* no cadastro devido ao *boleto em atraso* referente ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, no total de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Há iminência de *bloqueio integral de crédito* por conta do *boleto em atraso* referente ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, somando \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Seu cadastro pode sofrer *bloqueio integral de crédito* em razão do *boleto em atraso* referente ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, total de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Identificamos risco de *bloqueio integral de crédito* no cadastro devido ao *boleto em atraso* referente ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Há risco imediato de *bloqueio integral de crédito* por conta do *boleto em atraso* referente ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, com total de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `O cadastro encontra-se com risco de *bloqueio integral de crédito* pelo *boleto em atraso* referente ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, totalizando \`${ctx.valorFmt}\` *+ encargos*.`
       ]);
     }
     return alfaPick([
-      `Há risco de *bloqueio integral de crédito* no cadastro por conta dos \`${ctx.qtdFmt}\` *boletos em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, no total de \`${ctx.valorFmt}\` *+ encargos*.`,
-      `Seu cadastro está sob risco de *bloqueio integral de crédito* devido aos \`${ctx.qtdFmt}\` *boletos em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, no total de \`${ctx.valorFmt}\` *+ encargos*.`,
-      `Existe risco de *bloqueio integral de crédito* no cadastro em razão dos \`${ctx.qtdFmt}\` *boletos em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, totalizando \`${ctx.valorFmt}\` *+ encargos*.`,
-      `O cadastro está em risco de *bloqueio integral de crédito* por conta dos \`${ctx.qtdFmt}\` *boletos em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, no valor de \`${ctx.valorFmt}\` *+ encargos*.`,
-      `Temos risco de *bloqueio integral de crédito* no cadastro devido aos \`${ctx.qtdFmt}\` *boletos em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, no total de \`${ctx.valorFmt}\` *+ encargos*.`,
-      `Há iminência de *bloqueio integral de crédito* por conta dos \`${ctx.qtdFmt}\` *boletos em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, somando \`${ctx.valorFmt}\` *+ encargos*.`,
-      `Seu cadastro pode sofrer *bloqueio integral de crédito* em razão dos \`${ctx.qtdFmt}\` *boletos em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, total de \`${ctx.valorFmt}\` *+ encargos*.`,
-      `Identificamos risco de *bloqueio integral de crédito* no cadastro devido aos \`${ctx.qtdFmt}\` *boletos em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
-      `Há risco imediato de *bloqueio integral de crédito* por conta dos \`${ctx.qtdFmt}\` *boletos em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, com total de \`${ctx.valorFmt}\` *+ encargos*.`,
-      `O cadastro encontra-se com risco de *bloqueio integral de crédito* pelos \`${ctx.qtdFmt}\` *boletos em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, totalizando \`${ctx.valorFmt}\` *+ encargos*.`
+      `Há risco de *bloqueio integral de crédito* no cadastro por conta dos \`${ctx.qtdFmt}\` *boletos em atraso* referentes ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, no total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Seu cadastro está sob risco de *bloqueio integral de crédito* devido aos \`${ctx.qtdFmt}\` *boletos em atraso* referentes ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, no total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Existe risco de *bloqueio integral de crédito* no cadastro em razão dos \`${ctx.qtdFmt}\` *boletos em atraso* referentes ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, totalizando \`${ctx.valorFmt}\` *+ encargos*.`,
+      `O cadastro está em risco de *bloqueio integral de crédito* por conta dos \`${ctx.qtdFmt}\` *boletos em atraso* referentes ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, no valor de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Temos risco de *bloqueio integral de crédito* no cadastro devido aos \`${ctx.qtdFmt}\` *boletos em atraso* referentes ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, no total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Há iminência de *bloqueio integral de crédito* por conta dos \`${ctx.qtdFmt}\` *boletos em atraso* referentes ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, somando \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Seu cadastro pode sofrer *bloqueio integral de crédito* em razão dos \`${ctx.qtdFmt}\` *boletos em atraso* referentes ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Identificamos risco de *bloqueio integral de crédito* no cadastro devido aos \`${ctx.qtdFmt}\` *boletos em atraso* referentes ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Há risco imediato de *bloqueio integral de crédito* por conta dos \`${ctx.qtdFmt}\` *boletos em atraso* referentes ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, com total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `O cadastro encontra-se com risco de *bloqueio integral de crédito* pelos \`${ctx.qtdFmt}\` *boletos em atraso* referentes ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, totalizando \`${ctx.valorFmt}\` *+ encargos*.`
     ]);
   }
 
@@ -3126,29 +3131,29 @@ document.getElementById('toggleTheme').addEventListener('click',()=>{
   function alfaComposeRegistroBloqueio(ctx){
     if(ctx.qtd===1){
       return alfaPick([
-        `Seu cadastro está com *registro no Serasa* e com *bloqueio integral de crédito* devido ao \`${ctx.qtdTxt}\` boleto *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
-        `Seu cadastro possui *registro no Serasa* e *bloqueio integral de crédito* por conta do \`${ctx.qtdTxt}\` boleto *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
-        `Consta *registro no Serasa* e *bloqueio integral de crédito* no cadastro em razão do \`${ctx.qtdTxt}\` boleto *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, totalizando \`${ctx.valorFmt}\` *+ encargos*.`,
-        `O cadastro está com *registro no Serasa* e com *bloqueio integral de crédito* por conta do \`${ctx.qtdTxt}\` boleto *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, com total de \`${ctx.valorFmt}\` *+ encargos*.`,
-        `Há *registro no Serasa* e *bloqueio integral de crédito* no cadastro devido ao \`${ctx.qtdTxt}\` boleto *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, no valor de \`${ctx.valorFmt}\` *+ encargos*.`,
-        `Seu cadastro permanece com *registro no Serasa* e com *bloqueio integral de crédito* em função do \`${ctx.qtdTxt}\` boleto *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, totalizando \`${ctx.valorFmt}\` *+ encargos*.`,
-        `Identificamos *registro no Serasa* e *bloqueio integral de crédito* no cadastro por conta do \`${ctx.qtdTxt}\` boleto *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, no total de \`${ctx.valorFmt}\` *+ encargos*.`,
-        `No cadastro consta *registro no Serasa* e *bloqueio integral de crédito* devido ao \`${ctx.qtdTxt}\` boleto *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
-        `Seu cadastro já está com *registro no Serasa* e com *bloqueio integral de crédito* por conta do \`${ctx.qtdTxt}\` boleto *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, total de \`${ctx.valorFmt}\` *+ encargos*.`,
-        `Existe *registro no Serasa* e *bloqueio integral de crédito* no cadastro em razão do \`${ctx.qtdTxt}\` boleto *em atraso* referente à nota fiscal \`${ctx.notasShortFmt}\`, totalizando \`${ctx.valorFmt}\` *+ encargos*.`
+        `Seu cadastro está com *registro no Serasa* e com *bloqueio integral de crédito* devido ao \`${ctx.qtdTxt}\` boleto *em atraso* referente ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Seu cadastro possui *registro no Serasa* e *bloqueio integral de crédito* por conta do \`${ctx.qtdTxt}\` boleto *em atraso* referente ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Consta *registro no Serasa* e *bloqueio integral de crédito* no cadastro em razão do \`${ctx.qtdTxt}\` boleto *em atraso* referente ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, totalizando \`${ctx.valorFmt}\` *+ encargos*.`,
+        `O cadastro está com *registro no Serasa* e com *bloqueio integral de crédito* por conta do \`${ctx.qtdTxt}\` boleto *em atraso* referente ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, com total de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Há *registro no Serasa* e *bloqueio integral de crédito* no cadastro devido ao \`${ctx.qtdTxt}\` boleto *em atraso* referente ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, no valor de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Seu cadastro permanece com *registro no Serasa* e com *bloqueio integral de crédito* em função do \`${ctx.qtdTxt}\` boleto *em atraso* referente ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, totalizando \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Identificamos *registro no Serasa* e *bloqueio integral de crédito* no cadastro por conta do \`${ctx.qtdTxt}\` boleto *em atraso* referente ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, no total de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `No cadastro consta *registro no Serasa* e *bloqueio integral de crédito* devido ao \`${ctx.qtdTxt}\` boleto *em atraso* referente ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Seu cadastro já está com *registro no Serasa* e com *bloqueio integral de crédito* por conta do \`${ctx.qtdTxt}\` boleto *em atraso* referente ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, total de \`${ctx.valorFmt}\` *+ encargos*.`,
+        `Existe *registro no Serasa* e *bloqueio integral de crédito* no cadastro em razão do \`${ctx.qtdTxt}\` boleto *em atraso* referente ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, totalizando \`${ctx.valorFmt}\` *+ encargos*.`
       ]);
     }
     return alfaPick([
-      `Seu cadastro está com *registros no Serasa* e com *bloqueio integral de crédito* devido aos \`${ctx.qtdTxt}\` boletos *em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
-      `Seu cadastro possui *registros no Serasa* e *bloqueio integral de crédito* por conta dos \`${ctx.qtdTxt}\` boletos *em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
-      `Constam *registros no Serasa* e *bloqueio integral de crédito* no cadastro em razão dos \`${ctx.qtdTxt}\` boletos *em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, totalizando \`${ctx.valorFmt}\` *+ encargos*.`,
-      `O cadastro está com *registros no Serasa* e com *bloqueio integral de crédito* por conta dos \`${ctx.qtdTxt}\` boletos *em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, com total de \`${ctx.valorFmt}\` *+ encargos*.`,
-      `Há *registros no Serasa* e *bloqueio integral de crédito* no cadastro devido aos \`${ctx.qtdTxt}\` boletos *em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, no valor de \`${ctx.valorFmt}\` *+ encargos*.`,
-      `Seu cadastro permanece com *registros no Serasa* e com *bloqueio integral de crédito* em função dos \`${ctx.qtdTxt}\` boletos *em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, totalizando \`${ctx.valorFmt}\` *+ encargos*.`,
-      `Identificamos *registros no Serasa* e *bloqueio integral de crédito* no cadastro por conta dos \`${ctx.qtdTxt}\` boletos *em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, no total de \`${ctx.valorFmt}\` *+ encargos*.`,
-      `No cadastro constam *registros no Serasa* e *bloqueio integral de crédito* devido aos \`${ctx.qtdTxt}\` boletos *em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
-      `Seu cadastro já está com *registros no Serasa* e com *bloqueio integral de crédito* por conta dos \`${ctx.qtdTxt}\` boletos *em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, total de \`${ctx.valorFmt}\` *+ encargos*.`,
-      `Existem *registros no Serasa* e *bloqueio integral de crédito* no cadastro em razão dos \`${ctx.qtdTxt}\` boletos *em atraso* referentes às notas fiscais \`${ctx.notasShortFmt}\`, totalizando \`${ctx.valorFmt}\` *+ encargos*.`
+      `Seu cadastro está com *registros no Serasa* e com *bloqueio integral de crédito* devido aos \`${ctx.qtdTxt}\` boletos *em atraso* referentes ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Seu cadastro possui *registros no Serasa* e *bloqueio integral de crédito* por conta dos \`${ctx.qtdTxt}\` boletos *em atraso* referentes ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Constam *registros no Serasa* e *bloqueio integral de crédito* no cadastro em razão dos \`${ctx.qtdTxt}\` boletos *em atraso* referentes ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, totalizando \`${ctx.valorFmt}\` *+ encargos*.`,
+      `O cadastro está com *registros no Serasa* e com *bloqueio integral de crédito* por conta dos \`${ctx.qtdTxt}\` boletos *em atraso* referentes ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, com total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Há *registros no Serasa* e *bloqueio integral de crédito* no cadastro devido aos \`${ctx.qtdTxt}\` boletos *em atraso* referentes ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, no valor de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Seu cadastro permanece com *registros no Serasa* e com *bloqueio integral de crédito* em função dos \`${ctx.qtdTxt}\` boletos *em atraso* referentes ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, totalizando \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Identificamos *registros no Serasa* e *bloqueio integral de crédito* no cadastro por conta dos \`${ctx.qtdTxt}\` boletos *em atraso* referentes ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, no total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `No cadastro constam *registros no Serasa* e *bloqueio integral de crédito* devido aos \`${ctx.qtdTxt}\` boletos *em atraso* referentes ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, no valor total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Seu cadastro já está com *registros no Serasa* e com *bloqueio integral de crédito* por conta dos \`${ctx.qtdTxt}\` boletos *em atraso* referentes ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, total de \`${ctx.valorFmt}\` *+ encargos*.`,
+      `Existem *registros no Serasa* e *bloqueio integral de crédito* no cadastro em razão dos \`${ctx.qtdTxt}\` boletos *em atraso* referentes ${ctx.notaPrep} ${ctx.notaTerm} \`${ctx.notasShortFmt}\`, totalizando \`${ctx.valorFmt}\` *+ encargos*.`
     ]);
   }
 
