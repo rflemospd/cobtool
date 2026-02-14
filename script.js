@@ -3195,6 +3195,37 @@ document.getElementById('toggleTheme').addEventListener('click',()=>{
     return `${alfaBlockSaudacao()} ${alfaComposeRegistroBloqueio(ctx)} ${alfaComposeUrgencia()} ${alfaComposeDirecionamentoJuridico()}`;
   }
 
+  function alfaComposeRegistroBloqueio(ctx){
+    const variacoes=[
+      `Constam ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, no total de ${ctx.valorFmt} + encargos.`,
+      `Identificamos ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, totalizando ${ctx.valorFmt} + encargos.`,
+      `Há ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, no valor de ${ctx.valorFmt} + encargos.`,
+      `Seu cadastro possui ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, somando ${ctx.valorFmt} + encargos.`,
+      `No cadastro constam ${ctx.qtdFmt} boletos em atraso referentes às notas fiscais ${ctx.notasShortFmt}, no montante de ${ctx.valorFmt} + encargos.`
+    ];
+    return `${alfaPick(variacoes)} Há risco de *bloqueio integral de crédito* caso não haja regularização imediata.`;
+  }
+
+  function alfaComposeUrgencia(){
+    return alfaPick([
+      `Preciso de retorno com previsão de pagamento *ainda hoje*.`,
+      `Preciso da confirmação de regularização *ainda hoje*.`,
+      `Preciso de uma posição imediata para regularização *ainda hoje*.`,
+      `Preciso do seu retorno para conclusão da regularização *ainda hoje*.`,
+      `Preciso de confirmação dos pagamentos *ainda hoje*.`
+    ]);
+  }
+
+  function alfaComposeDirecionamentoJuridico(){
+    return alfaPick([
+      `Sem retorno, seguiremos com direcionamento para o *jurídico*.`,
+      `Sem posicionamento no prazo, o caso será direcionado ao *jurídico*.`,
+      `Na ausência de retorno, vamos encaminhar a pendência ao *jurídico*.`,
+      `Caso não haja confirmação, o processo seguirá para o *jurídico*.`,
+      `Sem a regularização no prazo, faremos o encaminhamento ao *jurídico*.`
+    ]);
+  }
+
   function alfaGenerate(kind){
     const ctx=alfaBuildContext();
     if(!ctx) return;
